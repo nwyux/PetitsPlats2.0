@@ -1,5 +1,5 @@
 /**
- * Filtre les recettes selon une requête de recherche
+ * Filtre les recettes selon une requête de recherche (VERSION BOUCLES NATIVES)
  * @param {Array} recipes - Tableau des recettes
  * @param {string} query - Terme de recherche
  * @returns {Array} Recettes filtrées
@@ -8,18 +8,38 @@ export function filterBySearch(recipes, query) {
     if (!query || query.length < 3) return recipes;
 
     const normalizedQuery = query.toLowerCase().trim();
+    const filteredRecipes = [];
 
-    return recipes.filter(recipe => {
-        if (recipe.name.toLowerCase().includes(normalizedQuery)) return true;
+    // Boucle principale sur toutes les recettes
+    for (let i = 0; i < recipes.length; i++) {
+        const recipe = recipes[i];
+        let isMatch = false;
 
-        if (recipe.description.toLowerCase().includes(normalizedQuery)) return true;
+        // Vérification du nom de la recette
+        if (recipe.name.toLowerCase().includes(normalizedQuery)) {
+            isMatch = true;
+        } 
+        // Vérification de la description
+        else if (recipe.description.toLowerCase().includes(normalizedQuery)) {
+            isMatch = true;
+        } 
+        // Vérification des ingrédients avec boucle for
+        else {
+            for (let j = 0; j < recipe.ingredients.length; j++) {
+                if (recipe.ingredients[j].ingredient.toLowerCase().includes(normalizedQuery)) {
+                    isMatch = true;
+                    break; // Sortie anticipée dès qu'un ingrédient correspond
+                }
+            }
+        }
 
-        if (recipe.ingredients.some(ingredient => 
-            ingredient.ingredient.toLowerCase().includes(normalizedQuery)
-        )) return true;
+        // Ajout de la recette si elle correspond
+        if (isMatch) {
+            filteredRecipes.push(recipe);
+        }
+    }
 
-        return false;
-    });
+    return filteredRecipes;
 }
 
 /**
