@@ -43,12 +43,10 @@ class App {
      * Configure les écouteurs d'événements globaux
      */
     setupEventListeners() {
-        // Écoute les changements de recherche
         document.addEventListener('searchPerformed', (e) => {
             this.handleFiltersChange();
         });
 
-        // Écoute les changements de tags
         document.addEventListener('filtersChanged', (e) => {
             this.handleFiltersChange();
         });
@@ -61,17 +59,14 @@ class App {
         const searchQuery = this.searchManager.getCurrentQuery();
         const selectedTags = this.tagManager.getSelectedTags();
         
-        // Applique tous les filtres
         this.filteredRecipes = applyAllFilters(
             this.originalRecipes,
             searchQuery,
             selectedTags
         );
         
-        // Met à jour l'affichage
         this.renderFilteredRecipes();
         
-        // Met à jour les dropdowns avec les nouvelles données
         this.dropdownManager.updateTags(this.filteredRecipes);
     }
 
@@ -99,7 +94,6 @@ class App {
     }
 }
 
-// Démarre l'application
 document.addEventListener('DOMContentLoaded', () => {
     new App().init();
 });

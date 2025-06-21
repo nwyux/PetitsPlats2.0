@@ -16,7 +16,6 @@ export class TagManager {
      * Configure les écouteurs d'événements
      */
     setupEventListeners() {
-        // Écoute les sélections de tags
         document.addEventListener('tagSelected', (e) => {
             this.addTag(e.detail.tag);
         });
@@ -57,7 +56,7 @@ export class TagManager {
         }
 
         const tagsHtml = this.selectedTags.map(tag => `
-            <span class="inline-flex items-center bg-custom-yellow text-black px-3 py-2 rounded-full text-sm font-medium">
+            <span class="inline-flex items-center bg-custom-yellow text-black px-3 py-2 rounded-lg text-sm font-medium">
                 ${tag}
                 <button 
                     class="ml-2 hover:bg-yellow-600 rounded-full p-1 transition-colors"

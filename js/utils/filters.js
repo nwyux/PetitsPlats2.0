@@ -10,13 +10,10 @@ export function filterBySearch(recipes, query) {
     const normalizedQuery = query.toLowerCase().trim();
 
     return recipes.filter(recipe => {
-        // Recherche dans le nom
         if (recipe.name.toLowerCase().includes(normalizedQuery)) return true;
 
-        // Recherche dans la description
         if (recipe.description.toLowerCase().includes(normalizedQuery)) return true;
 
-        // Recherche dans les ingrédients
         if (recipe.ingredients.some(ingredient => 
             ingredient.ingredient.toLowerCase().includes(normalizedQuery)
         )) return true;
@@ -38,16 +35,13 @@ export function filterByTags(recipes, selectedTags) {
         return selectedTags.every(tag => {
             const normalizedTag = tag.toLowerCase();
 
-            // Vérifie dans les ingrédients
             const hasIngredient = recipe.ingredients.some(ingredient =>
                 ingredient.ingredient.toLowerCase().includes(normalizedTag)
             );
 
-            // Vérifie dans les appareils
             const hasAppliance = recipe.appliance && 
                 recipe.appliance.toLowerCase().includes(normalizedTag);
 
-            // Vérifie dans les ustensiles
             const hasUstensil = recipe.ustensils && 
                 recipe.ustensils.some(ustensil =>
                     ustensil.toLowerCase().includes(normalizedTag)
@@ -68,10 +62,8 @@ export function filterByTags(recipes, selectedTags) {
 export function applyAllFilters(recipes, searchQuery, selectedTags) {
     let filteredRecipes = recipes;
 
-    // Applique le filtre de recherche
     filteredRecipes = filterBySearch(filteredRecipes, searchQuery);
 
-    // Applique le filtre des tags
     filteredRecipes = filterByTags(filteredRecipes, selectedTags);
 
     return filteredRecipes;
