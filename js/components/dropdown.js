@@ -44,8 +44,13 @@ export class DropdownManager {
                     <input 
                         type="text" 
                         placeholder="Rechercher..." 
-                        class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:outline-none text-sm"
+                        class="w-full pl-3 pr-16 py-2 border border-gray-300 rounded focus:outline-none text-sm"
                     />
+                    <div class="clear-button absolute inset-y-0 right-8 flex items-center pr-2 cursor-pointer hidden">
+                        <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -69,15 +74,26 @@ export class DropdownManager {
         if (!dropdown) return;
 
         const searchInput = dropdown.querySelector('input[type="text"]');
-        if (!searchInput) return;
+        const clearButton = dropdown.querySelector('.clear-button');
+        if (!searchInput || !clearButton) return;
 
         // Écoute les changements dans la barre de recherche
         searchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.trim();
+            this.toggleClearButton(clearButton, e.target.value);
+            
             const originalTags = this.allTagsCache[tagType] || [];
             const filteredTags = filterTags(originalTags, searchTerm);
             
             this.injectTags(dropdownSelector, filteredTags);
+        });
+
+        clearButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            searchInput.value = '';
+            this.toggleClearButton(clearButton, '');
+            this.injectTags(dropdownSelector, this.allTagsCache[tagType]);
+            searchInput.focus();
         });
 
         searchInput.addEventListener('click', (e) => {
@@ -92,6 +108,21 @@ export class DropdownManager {
                 }
             }, 100);
         });
+    }
+
+    /**
+     * Affiche ou masque le bouton de suppression selon le contenu de l'input
+     * @param {Element} clearButton - Élément du bouton de suppression
+     * @param {string} value - Valeur actuelle de l'input
+     */
+    toggleClearButton(clearButton, value) {
+        if (!clearButton) return;
+        
+        if (value.trim().length > 0) {
+            clearButton.classList.remove('hidden');
+        } else {
+            clearButton.classList.add('hidden');
+        }
     }
 
     /**
@@ -166,8 +197,14 @@ export class DropdownManager {
         if (!dropdown) return;
 
         const searchInput = dropdown.querySelector('input[type="text"]');
+        const clearButton = dropdown.querySelector('.clear-button');
+        
         if (searchInput) {
             searchInput.value = '';
+        }
+        
+        if (clearButton) {
+            this.toggleClearButton(clearButton, '');
         }
 
         const dropdownType = this.dropdowns.find(d => d.selector === dropdownSelector)?.type;
