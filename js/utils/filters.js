@@ -1,3 +1,5 @@
+import { sanitizeQuery } from './sanitizeQuery.js';
+
 /**
  * Filtre les recettes selon une requête de recherche (VERSION BOUCLES NATIVES)
  * @param {Array} recipes - Tableau des recettes
@@ -7,7 +9,8 @@
 export function filterBySearch(recipes, query) {
     if (!query || query.length < 3) return recipes;
 
-    const normalizedQuery = query.toLowerCase().trim();
+    const sanitizedQuery = sanitizeQuery(query);
+    const normalizedQuery = sanitizedQuery.toLowerCase().trim();
     const filteredRecipes = [];
 
     // Boucle principale sur toutes les recettes
